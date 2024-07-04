@@ -1,16 +1,16 @@
 use std::path::Path;
 
-use bb8_rusqlite::RusqliteConnectionManager;
-use rusqlite::{named_params, NO_PARAMS};
+use bb8_libsql::libsqlConnectionManager;
+use libsql::{named_params, NO_PARAMS};
 use tempfile::NamedTempFile;
 use tokio::task;
 
 async fn example(path: &Path) -> anyhow::Result<()> {
-    let manager = RusqliteConnectionManager::new(path);
+    let manager = libsqlConnectionManager::new(path);
     let pool = bb8::Pool::builder().build(manager).await?;
     let conn = pool.get().await?;
 
-    // rusqlite::Connection is synchronous, so good practice is to use
+    // libsql::Connection is synchronous, so good practice is to use
     // block_in_place() to ensure that we don't starve the tokio runtime of
     // available non-blocking threads to do work on. (Of course, in this trivial
     // example, there's no actual need for this.)
@@ -33,7 +33,7 @@ async fn example(path: &Path) -> anyhow::Result<()> {
 fn main() -> anyhow::Result<()> {
     let temp = NamedTempFile::new()?;
 
-    // Set up a runtime manually so we ensure all bb8 and rusqlite cleanup is
+    // Set up a runtime manually so we ensure all bb8 and libsql cleanup is
     // done before temp cleanup, otherwise we end up with a race condition
     // between the temporary file being removed and SQLite doing its final
     // write.

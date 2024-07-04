@@ -1,5 +1,5 @@
 use futures::future::join_all;
-use rusqlite::NO_PARAMS;
+use libsql::NO_PARAMS;
 use tempfile::tempdir;
 
 use super::*;
@@ -25,7 +25,7 @@ async fn connect_error() -> Result<(), anyhow::Error> {
 
     // Set up a connection manager with a read only flag for a non-existent
     // database, which should result in a connection error.
-    let manager = RusqliteConnectionManager::new_with_flags(
+    let manager = LibsqlConnectionManager::new_with_flags(
         &temp.file("connect_error.db"),
         OpenFlags::SQLITE_OPEN_READ_ONLY,
     );
@@ -50,8 +50,7 @@ async fn flags() -> Result<(), anyhow::Error> {
 
     // Now we can set up a connection manager with the read only flag set that
     // shouldn't result in connection errors.
-    let manager =
-        RusqliteConnectionManager::new_with_flags(&path, OpenFlags::SQLITE_OPEN_READ_ONLY);
+    let manager = LibsqlConnectionManager::new_with_flags(&path, OpenFlags::SQLITE_OPEN_READ_ONLY);
     let pool = bb8::Pool::builder().build(manager).await?;
 
     // Grab a connection, and then do something to generate an error, which will
@@ -66,7 +65,7 @@ async fn flags() -> Result<(), anyhow::Error> {
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn plain() -> Result<(), anyhow::Error> {
     let temp = TempDir::new()?;
-    let manager = RusqliteConnectionManager::new(&temp.file("plain.db"));
+    let manager = LibsqlConnectionManager::new(&temp.file("plain.db"));
     let pool = bb8::Pool::builder().build(manager).await?;
 
     // Ensure we get a valid connection when we ask for one.
