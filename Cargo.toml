@@ -1,11 +1,11 @@
 [package]
-name = "bb8-rusqlite"
+name = "bb8-libsql"
 version = "0.1.0"
-description = "A bb8 connection manager for rusqlite"
+description = "A bb8 connection manager for libsql"
 authors = ["Adam Harvey <adam@adamharvey.name>"]
 edition = "2018"
 license = "MIT"
-repository = "https://github.com/LawnGnome/bb8-rusqlite"
+repository = "https://github.com/LawnGnome/bb8-libsql"
 
 [dependencies]
 async-trait = "0.1"
