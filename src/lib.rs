@@ -37,7 +37,7 @@ impl ManageConnection for LibsqlConnectionManager {
 
     async fn is_valid(&self, conn: &mut Self::Connection) -> Result<(), Self::Error> {
         // Matching bb8-postgres, we'll try to run a trivial query here.
-        conn.execute("SELECT 1", ()).await?;
+        conn.query("SELECT 1", ()).await?;
         Ok(())
     }
 
